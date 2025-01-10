@@ -6,31 +6,39 @@ WEBSITE_ROOT = 'http://wirednewyork.com'
 
 print('Getting Wired New York list')
 html = requests.get(WEBSITE_ROOT + '/skyscrapers/alphabetical/').text
-soup = BeautifulSoup(html)
+soup = BeautifulSoup(html, 'html.parser')
 lis = soup.find('div', {'id': 'primary'}).find_all('li')
 print(len(lis))
 print(lis[0])
 
 buildings = []
 for li in lis:
+    text = li.text.replace('\xa0', ' ')
+    print('Parsing ' + text)
     a = li.find('a')
-    if a is None or not a.attr['href'].startswith(WEBSITE_ROOT):
+    if a is None or not '(' in text or not a['href'].startswith('/') or 'destroyed' in text or 'under construction' in text:
+        print('Skipping unlinked building.')
         continue
-    name, year = li.text.split(' (')
-    year = int(year.strip(')'))
+    name = text[:-7]
+    year = int(text[-5:-1])
     building = {
         'name': name,
         'year': year,
     }
-    html = requests.get(a.attr['href'])
-    soup = BeautifulSoup(html)
-    if soup.find('img')['src'] == (WEBSITE_ROOT + '/images/nav/wny_new_logo.jpg'):
+    html = requests.get(WEBSITE_ROOT + a['href']).text
+    soup = BeautifulSoup(html, 'html.parser')
+    if soup.find('img') is None:
+        print('Found 404 page.')
+        continue
+    if soup.find('img')['src'].endswith('/images/nav/wny_new_logo.jpg'):
         images = soup.find_all('img')[1:]
     else:
         content = soup.find('div', {'id': 'content'})
-        images = content.find_all('images')
+        images = content.find_all('img')
     if len(images) == 0:
         continue
     building['images'] = [image['src'] for image in images]
     buildings.append(building)
 
+with open('buildings.json', 'w') as f:
+    json.dump(buildings, f)
