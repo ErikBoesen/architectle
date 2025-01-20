@@ -182,12 +182,6 @@
         "name": "165 Charles Street",
         "year": 2005,
         "images": [
-            "http://wirednewyork.com/images/real_estate/165charles/165charles_hudson_s.jpg",
-            "http://wirednewyork.com/images/real_estate/165charles/165charles_s.jpg",
-            "http://wirednewyork.com/images/real_estate/165charles/165charles_pier45_s.jpg",
-            "http://wirednewyork.com/images/real_estate/165charles/165charles_11sept04_s.jpg",
-            "http://wirednewyork.com/images/real_estate/165charles/165charles_26june04_s.jpg",
-            "http://wirednewyork.com/images/real_estate/165charles/165charles_street_12june04_s.jpg",
             "http://wirednewyork.com/images/real_estate/165charles/pathfinder_charles_west_7nov03_s.jpg",
             "http://wirednewyork.com/real_estate/perry_west/images/perry_west_pathfinder_2march03_s.jpg"
         ]
@@ -812,7 +806,6 @@
         "year": 2003,
         "images": [
             "http://wirednewyork.com/aol/images/1centralpark_hudson_s.jpg",
-            "http://wirednewyork.com/aol/images/time_warner_under_stars_s.jpg",
             "http://wirednewyork.com/aol/images/time_warner_observatory_s.jpg",
             "http://wirednewyork.com/tw/shops_columbus_circle/time_warner_center_night_s.jpg",
             "http://wirednewyork.com/aol/images/time_warner_center_crown_s.jpg"

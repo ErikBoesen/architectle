@@ -28,8 +28,9 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className='App'>
       <header>
+        <img src='logo512.png' alt='Logo' id='logo' />
         <h1>Architectle</h1>
       </header>
       <main>
@@ -37,16 +38,19 @@ function App() {
           <div>
             <h2>{buildings[currentBuildingIndex].name}</h2>
             {buildings[currentBuildingIndex].images.map((image, imgIndex) => (
-                <img key={imgIndex} src={image} alt={buildings[currentBuildingIndex].name} />
+                <img className='photo' key={imgIndex} src={image} alt={buildings[currentBuildingIndex].name} />
               ))}
             <p>Guess the year this building was built:</p>
-            <input
-              type="range"
-              min="1800"
-              max="2023"
-              value={userGuess}
-              onChange={(e) => setUserGuess(Number(e.target.value))}
-            />
+            <label>
+              <input
+                type='range'
+                min='1880'
+                max='2025'
+                value={userGuess}
+                onChange={(e) => setUserGuess(Number(e.target.value))}
+              />
+              {userGuess}
+            </label>
             <button onClick={handleGuess}>Guess</button>
             <p>Your score: {score}</p>
           </div>
