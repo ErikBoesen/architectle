@@ -3,6 +3,9 @@ import './App.css';
 
 function App() {
   const [buildings, setBuildings] = useState([]);
+  const [score, setScore] = useState(100);
+  const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
+  const [userGuess, setUserGuess] = useState(0);
 
   useEffect(() => {
     const fetchBuildings = async () => {
@@ -16,23 +19,38 @@ function App() {
     fetchBuildings();
   }, []);
 
+  const handleGuess = () => {
+    const correctYear = buildings[currentBuildingIndex].year;
+    const difference = Math.abs(correctYear - userGuess);
+    setScore(prevScore => Math.max(prevScore - difference, 0)); // Ensure score doesn't go below 0
+    setCurrentBuildingIndex(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
+    setUserGuess(0); // Reset user guess
+  };
+
   return (
     <div className="App">
       <header>
         <h1>Architectle</h1>
       </header>
       <main>
-        {buildings.map((building, index) => (
-          <div key={index}>
-            <h2>{building.name}</h2>
-            <p>Year: {building.year}</p>
-            <div>
-              {building.images.map((image, imgIndex) => (
-                <img key={imgIndex} src={image} alt={building.name} />
+        {buildings.length > 0 && (
+          <div>
+            <h2>{buildings[currentBuildingIndex].name}</h2>
+            {buildings[currentBuildingIndex].images.map((image, imgIndex) => (
+                <img key={imgIndex} src={image} alt={buildings[currentBuildingIndex].name} />
               ))}
-            </div>
+            <p>Guess the year this building was built:</p>
+            <input
+              type="range"
+              min="1800"
+              max="2023"
+              value={userGuess}
+              onChange={(e) => setUserGuess(Number(e.target.value))}
+            />
+            <button onClick={handleGuess}>Guess</button>
+            <p>Your score: {score}</p>
           </div>
-        ))}
+        )}
       </main>
     </div>
   );
