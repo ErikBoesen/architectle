@@ -38,7 +38,7 @@ function App() {
           <div>
             <h2>{buildings[currentBuildingIndex].name}</h2>
             {buildings[currentBuildingIndex].images.map((image, imgIndex) => (
-                <img className='photo' key={imgIndex} src={image} alt={buildings[currentBuildingIndex].name} />
+                <img className='photo' key={imgIndex} src={'/buildings/' + image} alt={buildings[currentBuildingIndex].name} />
               ))}
             <p>Guess the year this building was built:</p>
             <label>
