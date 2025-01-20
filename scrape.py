@@ -54,5 +54,5 @@ for li in lis:
     building['images'] = [clean_image_src(building_url, image['src']) for image in images]
     buildings.append(building)
 
-with open('buildings.json', 'w') as f:
+with open('website/public/buildings.json', 'w') as f:
     json.dump(buildings, f)
