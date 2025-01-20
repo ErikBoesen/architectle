@@ -51,7 +51,13 @@ for li in lis:
         images = content.find_all('img')
     if len(images) == 0:
         continue
-    building['images'] = [clean_image_src(building_url, image['src']) for image in images]
+    image_urls = [clean_image_src(building_url, image['src']) for image in images]
+    image_filenames = [url.split('/')[-1] for url in image_urls]
+    for url, filename in zip(image_urls, image_filenames):
+        req = requests.get(url)
+        with open('website/public/buildings/' + filename, 'wb') as f:
+            f.write(req.content)
+    building['images'] = image_filenames
     buildings.append(building)
 
 with open('website/public/buildings.json', 'w') as f:
