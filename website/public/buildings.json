@@ -3,8 +3,6 @@
         "name": "1 Astor Plaza",
         "year": 1972,
         "images": [
-            "times_square_esb_observatory_23march02_s.jpg",
-            "viacom_amc25_s.jpg",
             "viacom_milford_s.jpg"
         ]
     },
@@ -19,11 +17,7 @@
         "name": "1 Central Park",
         "year": 2004,
         "images": [
-            "1centralpark_hudson_s.jpg",
-            "time_warner_under_stars_s.jpg",
-            "time_warner_observatory_s.jpg",
-            "time_warner_center_night_s.jpg",
-            "time_warner_center_crown_s.jpg"
+            "time_warner_observatory_s.jpg"
         ]
     },
     {
@@ -86,13 +80,7 @@
         "name": "1 Worldwide Plaza",
         "year": 1989,
         "images": [
-            "wwp_j28_s.jpg",
-            "world_wide_plaza_piers_morgan_s.jpg",
-            "wwp_weehawken_27oct02_s.jpg",
-            "1worldwide_plaza_night_06oct_s.jpg",
-            "world_wide_plaza_circle_line_s.jpg",
-            "wwp_plaza_snowstorm_s.jpg",
-            "world_wide_plaza_hudson_s.jpg"
+            "1worldwide_plaza_night_06oct_s.jpg"
         ]
     },
     {
@@ -174,8 +162,7 @@
             "mwd_dusk_s.jpg",
             "morgan_stanley_w_hotel_s.jpg",
             "mwd_wwp_s.jpg",
-            "mwd_contrast_s.jpg",
-            "mwd_8_s.jpg"
+            "mwd_contrast_s.jpg"
         ]
     },
     {
@@ -223,11 +210,7 @@
         "name": "176 Perry Street",
         "year": 2002,
         "images": [
-            "perry_west_esb_chrysler_hudson_9march03_s.jpg",
-            "perry_west_water_taxi_27oct02_s.jpg",
-            "165charles_pier45_s.jpg",
-            "165charles_11sept04_s.jpg",
-            "165charles_26june04_s.jpg"
+            "176perryst.jpg"
         ]
     },
     {
@@ -377,13 +360,7 @@
         "name": "343 West 42nd Street",
         "year": 2002,
         "images": [
-            "ivy_tower_empire_piers_11may02_s.jpg",
-            "ivy_tower_worldwide_plaza_11may02_s.jpg",
-            "343w42nd_worldwide_plaza_27march02_s.jpg",
-            "343w42nd_zebra_esb_23march02_s.jpg",
-            "mcgraw_hill_343w42nd_esb_23march02_s.jpg",
-            "343w42nd_zebra_20jan02_s.jpg",
-            "343w42nd_13feb02_s.jpg"
+            "mcgraw_hill_343w42nd_esb_23march02_s.jpg"
         ]
     },
     {
@@ -403,12 +380,7 @@
         "year": 2002,
         "images": [
             "383madison_esb_observatory_23march02_s.jpg",
-            "bear_sterns_top_may_s.jpg",
-            "bear_stearns_metlife_s.jpg",
-            "bear_stearns_glass_s.jpg",
-            "bear_stearns_s.jpg",
-            "bear_stearns_top_s.jpg",
-            "bear_sterns_times_square_s.jpg"
+            "bear_sterns_top_may_s.jpg"
         ]
     },
     {
@@ -1032,9 +1004,7 @@
         "year": 1952,
         "images": [
             "virgin_mother_lever_house_s.jpg",
-            "lever_house_3apr04_s.jpg",
-            "lever_house_s.jpg",
-            "lever_house_3feb02_s.jpg"
+            "lever_house_s.jpg"
         ]
     },
     {
@@ -1444,25 +1414,16 @@
         "name": "Trump Tower",
         "year": 1983,
         "images": [
-            "trump_tower_trees_29march02_s.jpg",
-            "sony_building_cp_31dec2000_s.jpg",
             "trump_tower_up_trees_s.jpg",
             "trump_tower_att_reflection_s.jpg",
-            "trump_tower_sony_building_oct27_s.jpg",
-            "trump_tower_lobby_s.jpg",
-            "trump_tower_inside_s.jpg"
+            "trump_tower_sony_building_oct27_s.jpg"
         ]
     },
     {
         "name": "Trump International Hotel & Tower",
         "year": 1997,
         "images": [
-            "trump_international_central_park_s.jpg",
-            "trump_international_top_closeup_s.jpg",
-            "trump_international_carnegie_mews_s.jpg",
-            "trump_international_hotel_entrance_s.jpg",
-            "trump_international_top_closeup_cp_s.jpg",
-            "trump_international_cp_tanning_s.jpg"
+            "trump_international_central_park_s.jpg"
         ]
     },
     {
@@ -1549,12 +1510,7 @@
         "name": "Woolworth Building",
         "year": 1913,
         "images": [
-            "woolworth_building_14apr02_s.jpg",
-            "woolworth_s.jpg",
-            "woolworth_wfc_s.jpg",
-            "woolworth_wfc_21sept_s.jpg",
-            "woolworth_battery_s.jpg",
-            "woolworth_bb_s.jpg"
+            "woolworth_building.jpg"
         ]
     },
     {
