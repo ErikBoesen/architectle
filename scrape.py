@@ -1,8 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+from urllib.parse import urljoin
 
 WEBSITE_ROOT = 'http://wirednewyork.com'
+
+
+def clean_image_src(building_url, src):
+    # Handle relative paths
+    if src.startswith('/'):
+        return WEBSITE_ROOT + src
+    elif src.startswith('../'):
+        # Handle '../' by navigating up the directory
+        return urljoin(building_url, src)
+    else:
+        # Handle paths starting from the current directory
+        return urljoin(building_url, src)
 
 print('Getting Wired New York list')
 html = requests.get(WEBSITE_ROOT + '/skyscrapers/alphabetical/').text
@@ -25,7 +38,8 @@ for li in lis:
         'name': name,
         'year': year,
     }
-    html = requests.get(WEBSITE_ROOT + a['href']).text
+    building_url = WEBSITE_ROOT + a['href']
+    html = requests.get(building_url).text
     soup = BeautifulSoup(html, 'html.parser')
     if soup.find('img') is None:
         print('Found 404 page.')
@@ -37,7 +51,7 @@ for li in lis:
         images = content.find_all('img')
     if len(images) == 0:
         continue
-    building['images'] = [image['src'] for image in images]
+    building['images'] = [clean_image_src(building_url, image['src']) for image in images]
     buildings.append(building)
 
 with open('buildings.json', 'w') as f:
