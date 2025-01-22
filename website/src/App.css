@@ -37,6 +37,7 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
 }
 #logo {
   display: flex;
@@ -54,9 +55,18 @@ main {
   flex-direction: column;
 }
 .photo {
-  height: 300px;
+  height: 500px;
 }
 input[type='range'] {
   width: 400px;
   vertical-align: middle;
+  margin-right: 8px;
+}
+button {
+  border: none;
+  background: #089AFD;
+  color: white;
+  border-radius: 18px;
+  padding: 6px 8px;
+  font: inherit;
 }
