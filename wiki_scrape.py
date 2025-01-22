@@ -20,7 +20,7 @@ for row in rows:
         # This is probably one tower in a set, like Silver Towers or 10 Columbus Circle.
         # Skip this as an earlier row will have had a picture of both with rowspan
         continue
-    name = cells[COL_INDEX_NAME].text
+    name = cells[COL_INDEX_NAME].text.strip()
     year = cells[COL_INDEX_YEAR].text.strip()
     if year == 'On hold':
         continue
