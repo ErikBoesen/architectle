@@ -48,6 +48,17 @@ def scrape_tallest_buildings_list(page_slug: str):
 
     return buildings
 
+def deduplicate_buildings(buildings):
+    seen_images = set()
+    unique_buildings = []
+
+    for building in buildings:
+        if building['image'] not in seen_images:
+            seen_images.add(building['image'])
+            unique_buildings.append(building)
+
+    return unique_buildings
+
 buildings = []
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_New_York_City')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Brooklyn')
