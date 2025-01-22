@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   const [buildings, setBuildings] = useState([]);
-  const [score, setScore] = useState(100);
+  const [lives, setLives] = useState(100);
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const [lastGuess, setLastGuess] = useState(null);
@@ -23,7 +23,7 @@ function App() {
   const handleGuess = () => {
     const correctYear = buildings[currentBuildingIndex].year;
     const difference = Math.abs(correctYear - userGuess);
-    setScore(prevScore => Math.max(prevScore - difference, 0)); // Ensure score doesn't go below 0
+    setLives(prevScore => Math.max(prevScore - difference, 0)); // Ensure score doesn't go below 0
     setCurrentBuildingIndex(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
     setUserGuess(0); // Reset user guess
 
@@ -48,6 +48,7 @@ function App() {
           <img src='logo512.png' alt='Logo' />
           <h1>Architectle</h1>
         </div>
+        <p>❤️{lives}</p>
       </header>
       <main>
         {buildings.length > 0 && (
@@ -67,11 +68,10 @@ function App() {
               />
             </label>
             <button onClick={handleGuess}>Guess</button>
-            <p>Your score: {score}</p>
             {lastGuess && (
               <div>
                 <p>
-                  {lastGuess.correct ? "Congratulations!" : `You lost ${lastGuess.difference} points!`}
+                  {lastGuess.correct ? "Perfect!" : `-${lastGuess.difference} lives!`}
                 </p>
                 <p>
                   Last guess: {lastGuess.guessedYear} for {lastGuess.buildingName}
