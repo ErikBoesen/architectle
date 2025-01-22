@@ -951,12 +951,7 @@
         "name": "IBM Building",
         "year": 1983,
         "images": [
-            "ibm_building_trump_s.jpg",
-            "ibm_atrium_day_s.jpg",
-            "ibm_building_sculpture_3feb02_s.jpg",
-            "ibm_winter_garden_s.jpg",
-            "ibm_oldenburg_s.jpg",
-            "ibm_building_trump2_s.jpg"
+            "ibm_building.jpg"
         ]
     },
     {
@@ -973,17 +968,6 @@
         "name": "Lehman Brothers Building",
         "year": 2001,
         "images": [
-            "corner_spacer.gif",
-            "corner_spacer.gif",
-            "corner_spacer.gif",
-            "corner_spacer.gif",
-            "corner_spacer.gif",
-            "corner_spacer.gif",
-            "arrow.gif",
-            "arrow.gif",
-            "arrow.gif",
-            "arrow.gif",
-            "corner_spacer.gif",
             "morgan_stanley_july01_s.jpg",
             "morgan_stanley_plaza_51_s.jpg",
             "morgan_stanley_49_s.jpg",

@@ -55,10 +55,10 @@ for li in lis:
     image_filenames = [url.split('/')[-1] for url in image_urls]
     for url, filename in zip(image_urls, image_filenames):
         req = requests.get(url)
-        with open('website/public/buildings/' + filename, 'wb') as f:
+        with open('website/public/buildings_wirednewyork/' + filename, 'wb') as f:
             f.write(req.content)
     building['images'] = image_filenames
     buildings.append(building)
 
-with open('website/public/buildings.json', 'w') as f:
+with open('website/public/buildings_wirednewyork.json', 'w') as f:
     json.dump(buildings, f)
