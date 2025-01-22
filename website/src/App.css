@@ -19,6 +19,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
 .App {
   text-align: center;
@@ -29,16 +30,27 @@ body {
   justify-content: center;
   padding: 20px;
   margin: 40px 20px;
+  min-width: 8in;
 }
 header {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
 #logo {
+  display: flex;
+  flex-direction: row;
+}
+#logo img {
   width: 40px;
   height: 40px;
 }
 h1 {
+}
+main {
+  min-height: 6in;
+  display: flex;
+  flex-direction: column;
 }
 .photo {
   height: 300px;
