@@ -21,7 +21,10 @@ for row in rows:
         # Skip this as an earlier row will have had a picture of both with rowspan
         continue
     name = cells[COL_INDEX_NAME].text
-    year = int(cells[COL_INDEX_YEAR].text)
+    year = cells[COL_INDEX_YEAR].text.strip()
+    if year == 'On hold':
+        continue
+    year = int(year)
     if year >= datetime.date.today().year:
         continue
 
