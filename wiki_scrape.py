@@ -36,6 +36,7 @@ for row in rows:
     html = requests.get(WIKI_ROOT + image_page_url).text
     soup = BeautifulSoup(html, 'html.parser')
     image_url = soup.find('div', {'class': 'fullImageLink'}).find('a')['href']
+    image_url = 'https:' + image_url
 
     buildings.append({
         'name': name,
