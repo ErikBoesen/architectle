@@ -6,6 +6,7 @@ function App() {
   const [score, setScore] = useState(100);
   const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
+  const [lastGuess, setLastGuess] = useState(null);
 
   useEffect(() => {
     const fetchBuildings = async () => {
@@ -25,6 +26,19 @@ function App() {
     setScore(prevScore => Math.max(prevScore - difference, 0)); // Ensure score doesn't go below 0
     setCurrentBuildingIndex(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
     setUserGuess(0); // Reset user guess
+
+    // Set last guess details
+    setLastGuess({
+      buildingName: buildings[currentBuildingIndex].name,
+      guessedYear: userGuess,
+      difference: difference,
+      correct: correctYear === userGuess,
+    });
+
+    // Dismiss last guess message after 5 seconds
+    setTimeout(() => {
+      setLastGuess(null);
+    }, 5000);
   };
 
   return (
@@ -40,7 +54,7 @@ function App() {
           <div>
             <h2>{buildings[currentBuildingIndex].name}</h2>
             {buildings[currentBuildingIndex].images.map((image, imgIndex) => (
-                <img className='photo' key={imgIndex} src={'/buildings/' + image} alt={buildings[currentBuildingIndex].name} />
+                <img className='photo' key={imgIndex} src={image} alt={buildings[currentBuildingIndex].name} />
               ))}
             <p>{userGuess === 0 ? 'Guess the year this building was built:' : userGuess}</p>
             <label>
@@ -54,6 +68,16 @@ function App() {
             </label>
             <button onClick={handleGuess}>Guess</button>
             <p>Your score: {score}</p>
+            {lastGuess && (
+              <div>
+                <p>
+                  {lastGuess.correct ? "Congratulations!" : `You lost ${lastGuess.difference} points!`}
+                </p>
+                <p>
+                  Last guess: {lastGuess.guessedYear} for {lastGuess.buildingName}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </main>
