@@ -4,7 +4,7 @@ import './App.css';
 function App() {
   const [buildings, setBuildings] = useState([]);
   const [lives, setLives] = useState(100);
-  const [currentBuildingIndex, setCurrentBuildingIndex] = useState(0);
+  const [round, setRound] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const [lastGuess, setLastGuess] = useState(null);
 
@@ -21,15 +21,15 @@ function App() {
   }, []);
 
   const handleGuess = () => {
-    const correctYear = buildings[currentBuildingIndex].year;
-    const difference = Math.abs(correctYear - userGuess);
+    const correctYear = buildings[round].year;
+    const difference = Math.abs(correctYear - userGuess) - 10;
     setLives(prevScore => Math.max(prevScore - difference, 0)); // Ensure score doesn't go below 0
-    setCurrentBuildingIndex(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
+    setRound(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
     setUserGuess(0); // Reset user guess
 
     // Set last guess details
     setLastGuess({
-      buildingName: buildings[currentBuildingIndex].name,
+      buildingName: buildings[round].name,
       guessedYear: userGuess,
       difference: difference,
       correct: correctYear === userGuess,
@@ -53,9 +53,8 @@ function App() {
       <main>
         {buildings.length > 0 && (
           <div>
-            <h2>{buildings[currentBuildingIndex].name}</h2>
-            {buildings[currentBuildingIndex].images.map((image, imgIndex) => (
-                <img className='photo' key={imgIndex} src={image} alt={buildings[currentBuildingIndex].name} />
+            {buildings[round].images.map((image, imgIndex) => (
+                <img className='photo' key={imgIndex} src={image} alt={buildings[round].name} />
               ))}
             <p>{userGuess === 0 ? 'Guess the year this building was built:' : userGuess}</p>
             <label>
@@ -71,10 +70,10 @@ function App() {
             {lastGuess && (
               <div>
                 <p>
-                  {lastGuess.correct ? "Perfect!" : `-${lastGuess.difference} lives!`}
+
                 </p>
                 <p>
-                  Last guess: {lastGuess.guessedYear} for {lastGuess.buildingName}
+                   <a href={'https://en.wikipedia.org/wiki/' + lastGuess.buildingName.replace(' ', '_')}>{lastGuess.buildingName}</a> was built in  {lastGuess.guessedYear}. {lastGuess.correct ? 'Good guess!' : `-${lastGuess.difference} lives!`}
                 </p>
               </div>
             )}
