@@ -22,14 +22,9 @@ function App() {
 
   const handleGuess = () => {
     const correctYear = buildings[round].year;
-    const difference = Math.abs(correctYear - userGuess);
-
-    if (difference > 10) {
-        setLives(prevScore => Math.max(prevScore - difference, 0)); // Subtract difference if greater than 10
-    } else {
-        setLives(prevScore => prevScore + (10 - difference), 10); // Add lives back for being within 10 years
-    }
-
+    let difference = Math.abs(correctYear - userGuess);
+    difference = 10 - difference;
+    setLives(prevScore => Math.max(prevScore + difference, 0));
     setRound(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
     setUserGuess(0); // Reset user guess
 
@@ -37,6 +32,7 @@ function App() {
     setLastGuess({
         building: buildings[round],
         guessedYear: userGuess,
+        difference: difference,
         correct: correctYear === userGuess,
     });
 
@@ -78,7 +74,7 @@ function App() {
             {lastGuess && (
               <div>
                 <p>
-                   <a href={'https://en.wikipedia.org/wiki/' + lastGuess.building.name.replace(' ', '_')}>{lastGuess.building.name}</a> was finished in {lastGuess.building.year}, you guessed {lastGuess.guessedYear}. {lastGuess.correct ? 'Perfect guess!' : `-${lastGuess.difference} lives!`}
+                   <a href={'https://en.wikipedia.org/wiki/' + lastGuess.building.name.replace(' ', '_')}>{lastGuess.building.name}</a> was finished in {lastGuess.building.year}, you guessed {lastGuess.guessedYear}. {lastGuess.correct ? 'Perfect guess!' : `${lastGuess.difference} lives!`}
                 </p>
               </div>
             )}
