@@ -10,6 +10,7 @@ INFOBOX_YEAR_PROPERTIES = (
     'Built',
     'Construction finished',
     'Opened',
+    'Inaugurated',
     'Construction started',
 )
 CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
@@ -71,8 +72,13 @@ def scrape_individual_building_page(page_slug):
     image = infobox.find('td', {'class': 'infobox-image'})
     if not image:
         return None
-    image = image.find('img')
-    image = 'https:' + image['src']
+    # Skip maps if possible
+    images = image.find_all('img')
+    filtered_images = [img for img in images if not (img.find_parent('a', class_='mw-kartographer-map') or img.find_parent('div', class_='switcher-container'))]
+    if filtered_images:
+        image = 'https:' + filtered_images[-1]['src']  # Use the last valid image, earlier ones may be logos etc
+    else:
+        return None
 
     name = soup.find('span', {'class': 'mw-page-title-main'}).text
 
@@ -91,7 +97,7 @@ def scrape_individual_building_page(page_slug):
             year = CITATION_RE.sub('', year)
             if prop == 'Built' and DASH_RE.search(year):
                 year = year.split(DASH_RE.search(year).group(1))
-            elif prop == 'Opened':
+            elif prop in ('Opened', 'Inaugurated'):
                 # Find the first four-digit number in the year string
                 year_match = re.search(r'\b(\d{4})\b', year)
                 if year_match:
