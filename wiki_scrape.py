@@ -11,13 +11,14 @@ INFOBOX_YEAR_PROPERTIES = (
     'Construction finished',
     'Opened',
     'Inaugurated',
-    'Construction started',
+    #'Construction started',
 )
 CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
 
 
 def scrape_tallest_buildings_list(page_slug: str):
+    print('Scraping tallest buildings list: ' + page_slug)
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -43,7 +44,6 @@ def scrape_tallest_buildings_list(page_slug: str):
             continue
 
         image_cell = cells[COL_INDEX_IMAGE]
-        print(image_cell)
         if image_cell is None:
             continue
         image_page_url = image_cell.find('a')['href']
@@ -57,11 +57,13 @@ def scrape_tallest_buildings_list(page_slug: str):
             'image': image_url,
             'year': year,
         })
+        print('Scraped ' + name)
 
     return buildings
 
 
 def scrape_individual_building_page(page_slug):
+    print('Scraping individual page: ' + page_slug)
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -69,11 +71,9 @@ def scrape_individual_building_page(page_slug):
     if infobox is None:
         # would be cool to throw the page content to ChatGPT or something but that would be intense
         return None
-    image = infobox.find('td', {'class': 'infobox-image'})
-    if not image:
-        return None
+
+    images = image.find_all('img', {'class': 'mw-file-element'})
     # Skip maps if possible
-    images = image.find_all('img')
     filtered_images = [img for img in images if not (img.find_parent('a', class_='mw-kartographer-map') or img.find_parent('div', class_='switcher-container'))]
     if filtered_images:
         image = 'https:' + filtered_images[-1]['src']  # Use the last valid image, earlier ones may be logos etc
@@ -97,7 +97,7 @@ def scrape_individual_building_page(page_slug):
             year = CITATION_RE.sub('', year)
             if prop == 'Built' and DASH_RE.search(year):
                 year = year.split(DASH_RE.search(year).group(1))
-            elif prop in ('Opened', 'Inaugurated'):
+            elif prop in ('Opened', 'Inaugurated', 'Construction finished'):
                 # Find the first four-digit number in the year string
                 year_match = re.search(r'\b(\d{4})\b', year)
                 if year_match:
@@ -114,7 +114,9 @@ def scrape_individual_building_page(page_slug):
     return None
 
 
-def scrape_category(category_slug)
+def scrape_category(category_slug):
+    html = requests.get(WIKI_ROOT + '/wiki/Category:' + category_slug)
+    soup = BeautifulSoup(html, 'html.parser')
 
 
 
@@ -134,6 +136,7 @@ buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_New_Yor
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Brooklyn')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Queens')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Staten_Island')
+buildings += scrape_category('Full-block_apartment_buildings_in_New_York_City')
 
 buildings = deduplicate_buildings(buildings)
 
