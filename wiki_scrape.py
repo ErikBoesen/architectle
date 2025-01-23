@@ -8,6 +8,7 @@ WIKI_ROOT = 'https://en.wikipedia.org'
 INFOBOX_YEAR_PROPERTIES = (
     'Completed',
     'Built',
+    'Estimated completion',
     'Construction finished',
     'Opened',
     'Inaugurated',
@@ -16,6 +17,7 @@ INFOBOX_YEAR_PROPERTIES = (
 CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
 
+scraped_pages = set()  # Track scraped pages
 
 def scrape_tallest_buildings_list(page_slug: str):
     print('Scraping tallest buildings list: ' + page_slug)
@@ -63,6 +65,9 @@ def scrape_tallest_buildings_list(page_slug: str):
 
 
 def scrape_individual_building_page(page_slug):
+    if page_slug in scraped_pages:  # Check if already scraped
+        return None  # Early exit if already scraped
+    scraped_pages.add(page_slug)  # Mark this page as scraped
     print('Scraping individual page: ' + page_slug)
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
     soup = BeautifulSoup(html, 'html.parser')
@@ -115,10 +120,26 @@ def scrape_individual_building_page(page_slug):
 
 
 def scrape_category(category_slug):
+    print('Scraping category' + category_slug)
     html = requests.get(WIKI_ROOT + '/wiki/Category:' + category_slug)
     soup = BeautifulSoup(html, 'html.parser')
 
+    buildings = []
+    subcategories = soup.find_all('div', {'class': 'CategoryTreeItem'})
+    for subcategory in subcategories:
+        link = subcategory.find('a')
+        subcategory_slug = link['href'].replace('/wiki/Category:', '')
+        print('Recursing on subcategory ' + subcategory_slug)
+        buildings += scrape_category(subcategory_slug)
 
+    page_links = soup.find('div', {'class': 'mw-category'}).find_all('a')
+    for page_link in page_links:
+        page_slug = page_link['href'].replace('/wiki/', '')
+        building = scrape_individual_building_page(page_slug)
+        if building is not None:
+            buildings.append(building)
+
+    return buildings
 
 def deduplicate_buildings(buildings):
     seen_images = set()
@@ -136,7 +157,7 @@ buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_New_Yor
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Brooklyn')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Queens')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Staten_Island')
-buildings += scrape_category('Full-block_apartment_buildings_in_New_York_City')
+buildings += scrape_category('Residential_buildings_in_New_York_City')
 
 buildings = deduplicate_buildings(buildings)
 
