@@ -17,7 +17,8 @@ INFOBOX_YEAR_PROPERTIES = (
 CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
 
-scraped_pages = set()  # Track scraped pages
+scraped_pages = set()
+scraped_categories = set()
 
 def scrape_tallest_buildings_list(page_slug: str):
     print('Scraping tallest buildings list: ' + page_slug)
@@ -49,6 +50,8 @@ def scrape_tallest_buildings_list(page_slug: str):
         if image_cell is None:
             continue
         image_page_url = image_cell.find('a')['href']
+        if 'UploadWizard' in image_page_url:
+            continue
         html = requests.get(WIKI_ROOT + image_page_url).text
         soup = BeautifulSoup(html, 'html.parser')
         image_url = soup.find('div', {'class': 'fullImageLink'}).find('a')['href']
@@ -65,9 +68,11 @@ def scrape_tallest_buildings_list(page_slug: str):
 
 
 def scrape_individual_building_page(page_slug):
-    if page_slug in scraped_pages:  # Check if already scraped
-        return None  # Early exit if already scraped
-    scraped_pages.add(page_slug)  # Mark this page as scraped
+    if page_slug in scraped_pages:
+        print('Skipping already scraped page ' + page_slug)
+        return None
+    scraped_pages.add(page_slug)
+
     print('Scraping individual page: ' + page_slug)
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
     soup = BeautifulSoup(html, 'html.parser')
@@ -120,8 +125,13 @@ def scrape_individual_building_page(page_slug):
 
 
 def scrape_category(category_slug):
-    print('Scraping category' + category_slug)
-    html = requests.get(WIKI_ROOT + '/wiki/Category:' + category_slug)
+    if category_slug in scraped_categories:
+        print('Skipping already scraped category ' + category_slug)
+        return []  # Early exit if already scraped
+    scraped_categories.add(category_slug)
+
+    print('Scraping category ' + category_slug)
+    html = requests.get(WIKI_ROOT + '/wiki/Category:' + category_slug).text
     soup = BeautifulSoup(html, 'html.parser')
 
     buildings = []
@@ -153,11 +163,12 @@ def deduplicate_buildings(buildings):
     return unique_buildings
 
 buildings = []
+buildings += scrape_category('Residential_buildings_in_New_York_City')
+buildings += scrape_category('Historic_district_contributing_properties_in_New_York_City')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_New_York_City')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Brooklyn')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Queens')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Staten_Island')
-buildings += scrape_category('Residential_buildings_in_New_York_City')
 
 buildings = deduplicate_buildings(buildings)
 
