@@ -18,6 +18,15 @@ CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
 YEAR_RE = re.compile(r'(\d{4})')
 current_year = datetime.date.today().year
+MANDATORY_CATEGORY_KEYWORDS = (
+    'New_York',
+    'New_York_City',
+    'Manhattan',
+    'Brooklyn',
+    'Bronx',
+    'Queens',
+    'Staten_Island',
+)
 
 scraped_pages = set()
 scraped_categories = set()
@@ -92,7 +101,7 @@ def scrape_individual_building_page(page_slug):
     else:
         return None
 
-    name = soup.find('span', {'class': 'mw-page-title-main'}).text
+    name = soup.find('h1', {'class': 'mw-first-heading'}).text
 
     rows = infobox.find_all('tr')
     infobox_properties = {}
@@ -126,6 +135,10 @@ def scrape_individual_building_page(page_slug):
 
 
 def scrape_category(category_slug):
+    if not any(category_slug.endswith(keyword) for keyword in MANDATORY_CATEGORY_KEYWORDS):
+        print('Skipping category ' + category_slug + ' as it does not contain mandatory keywords.')
+        return []  # Early exit if no mandatory keywords are found
+
     if category_slug in scraped_categories:
         print('Skipping already scraped category ' + category_slug)
         return []  # Early exit if already scraped
@@ -164,7 +177,7 @@ def deduplicate_buildings(buildings):
     unique_buildings = []
 
     for building in buildings:
-        if building['image'] not in seen_images:
+        if building and building['image'] not in seen_images:
             seen_images.add(building['image'])
             unique_buildings.append(building)
 
