@@ -16,6 +16,7 @@ INFOBOX_YEAR_PROPERTIES = (
 )
 CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
+YEAR_RE = re.compile(r'(\d{4})')
 
 scraped_pages = set()
 scraped_categories = set()
@@ -50,7 +51,7 @@ def scrape_tallest_buildings_list(page_slug: str):
         if image_cell is None:
             continue
         image_page_url = image_cell.find('a')['href']
-        if 'UploadWizard' in image_page_url:
+        if 'UploadWizard' in image_page_url: # Ignore 'Upload image' links
             continue
         html = requests.get(WIKI_ROOT + image_page_url).text
         soup = BeautifulSoup(html, 'html.parser')
@@ -82,7 +83,7 @@ def scrape_individual_building_page(page_slug):
         # would be cool to throw the page content to ChatGPT or something but that would be intense
         return None
 
-    images = image.find_all('img', {'class': 'mw-file-element'})
+    images = infobox.find_all('img', {'class': 'mw-file-element'})
     # Skip maps if possible
     filtered_images = [img for img in images if not (img.find_parent('a', class_='mw-kartographer-map') or img.find_parent('div', class_='switcher-container'))]
     if filtered_images:
@@ -104,12 +105,17 @@ def scrape_individual_building_page(page_slug):
     for prop in INFOBOX_YEAR_PROPERTIES:
         if prop in infobox_properties:
             year = infobox_properties[prop]
+            print(year)
             year = CITATION_RE.sub('', year)
-            if prop == 'Built' and DASH_RE.search(year):
-                year = year.split(DASH_RE.search(year).group(1))
-            elif prop in ('Opened', 'Inaugurated', 'Construction finished'):
+            year = year.replace('c.\u2009', '') # remove circa
+            if prop == 'Built':
+                if DASH_RE.search(year):
+                    year = DASH_RE.split(year)[-1]
+                else:
+                    year = YEAR_RE.search(year).groups()[0]
+            elif prop in ('Opened', 'Inaugurated', 'Construction finished', 'Completed'):
                 # Find the first four-digit number in the year string
-                year_match = re.search(r'\b(\d{4})\b', year)
+                year_match = YEAR_RE.search(year)
                 if year_match:
                     year = int(year_match.group(1))
                 else:
@@ -135,9 +141,12 @@ def scrape_category(category_slug):
     soup = BeautifulSoup(html, 'html.parser')
 
     buildings = []
-    subcategories = soup.find_all('div', {'class': 'CategoryTreeItem'})
-    for subcategory in subcategories:
-        link = subcategory.find('a')
+    subcategory_links = soup.select('div.CategoryTreeItem a')
+    print(f'Found {len(subcategory_links)} subcategory links! I\'m sure none of these will cause complications!')
+    for link in subcategory_links:
+        if link.get('href') is None:
+            print('Found hrefless link, skipping')
+            continue
         subcategory_slug = link['href'].replace('/wiki/Category:', '')
         print('Recursing on subcategory ' + subcategory_slug)
         buildings += scrape_category(subcategory_slug)
