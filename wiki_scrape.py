@@ -60,7 +60,10 @@ def scrape_tallest_buildings_list(page_slug: str):
         image_cell = cells[COL_INDEX_IMAGE]
         if image_cell is None:
             continue
-        image_page_url = image_cell.find('a')['href']
+        image_page_url = image_cell.find('a')
+        if image_page_url is None:
+            continue
+        image_page_url = image_page_url['href']
         if 'UploadWizard' in image_page_url: # Ignore 'Upload image' links
             continue
         html = requests.get(WIKI_ROOT + image_page_url).text
@@ -150,7 +153,6 @@ def scrape_category(category_slug):
 
     buildings = []
     subcategory_links = soup.select('div.CategoryTreeItem a')
-    print(f'Found {len(subcategory_links)} subcategory links! I\'m sure none of these will cause complications!')
     for link in subcategory_links:
         if link.get('href') is None:
             print('Found hrefless link, skipping')
@@ -161,8 +163,6 @@ def scrape_category(category_slug):
 
     page_links = soup.find('div', {'class': 'mw-category'}).find_all('a')
     for page_link in page_links:
-        print('----' + category_slug)
-        print(page_link)
         if page_link.get('href') is None:
             continue
         page_slug = page_link['href'].replace('/wiki/', '')
