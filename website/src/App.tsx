@@ -7,6 +7,7 @@ function App() {
   const [round, setRound] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const [lastGuess, setLastGuess] = useState(null);
+  const [showLossPopup, setShowLossPopup] = useState(false);
 
   useEffect(() => {
     const fetchBuildings = async () => {
@@ -40,6 +41,24 @@ function App() {
     setTimeout(() => {
         setLastGuess(null);
     }, 5000);
+
+    if (lives <= 0) {
+      setShowLossPopup(true);
+    }
+  };
+
+  const restartGame = () => {
+    setLives(100);
+    setRound(0);
+    setUserGuess(0);
+    setLastGuess(null);
+    setShowLossPopup(false);
+  };
+
+  const copyToClipboard = () => {
+    const performanceRecord = `You made it to round ${round} with ${lives} lives left!`;
+    navigator.clipboard.writeText(performanceRecord);
+    alert('Performance copied to clipboard!');
   };
 
   return (
@@ -57,14 +76,12 @@ function App() {
       <main>
         {buildings.length > 0 && (
           <div>
-            {buildings[round].images.map((image, imgIndex) => (
-                <img className='photo' key={imgIndex} src={image} alt={buildings[round].name} />
-              ))}
+            <img className='photo' src={buildings[round].image} alt={buildings[round].name} />
             <p>{userGuess === 0 ? 'Guess the year this building was built:' : userGuess}</p>
             <label>
               <input
                 type='range'
-                min='1880'
+                min='1640'
                 max='2025'
                 value={userGuess}
                 onChange={(e) => setUserGuess(Number(e.target.value))}
@@ -81,6 +98,15 @@ function App() {
           </div>
         )}
       </main>
+
+      <div className={'loss popup ' + (showLossPopup ? 'shown' : '')}>
+        <div className='content'>
+          <h2>You Lost!</h2>
+          <p>Congratulations! You made it to round {round}.</p>
+          <button onClick={restartGame}>Restart Game</button>
+          <button onClick={copyToClipboard}>Share</button>
+        </div>
+      </div>
       <footer>A game by <a href="https://erikboesen.com">Erik Boesen</a>.</footer>
     </div>
   );
