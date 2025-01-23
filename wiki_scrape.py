@@ -110,7 +110,7 @@ def scrape_individual_building_page(page_slug):
             year = year.replace('c.\u2009', '') # remove circa
             if prop == 'Built':
                 if DASH_RE.search(year):
-                    year = DASH_RE.split(year)[-1]
+                    year = YEAR_RE.search(year).groups()[-1]
                 else:
                     year = YEAR_RE.search(year).groups()[0]
             elif prop in ('Opened', 'Inaugurated', 'Construction finished', 'Completed'):
