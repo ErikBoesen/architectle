@@ -2,8 +2,17 @@ import requests
 import datetime
 import json
 from bs4 import BeautifulSoup
+import re
 
 WIKI_ROOT = 'https://en.wikipedia.org'
+INFOBOX_YEAR_PROPERTIES = (
+    'Completed',
+    'Built',
+    'Construction finished',
+    'Construction started',
+)
+CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
+DASH_RE = re.compile(r'[\u2013\u2014-]')
 
 def scrape_tallest_buildings_list(page_slug: str):
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
@@ -47,6 +56,49 @@ def scrape_tallest_buildings_list(page_slug: str):
         })
 
     return buildings
+
+def scrape_individual_building_page(page_slug):
+    html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
+    soup = BeautifulSoup(html, 'html.parser')
+
+
+    infobox = soup.find('table', {'class': 'infobox'})
+    if infobox is None:
+        # would be cool to throw the page content to ChatGPT or something but that would be intense
+        return None
+    image = infobox.find('td', {'class': 'infobox-image'})
+    if not image:
+        return None
+    image = image.find('img')
+    image = 'https:' + image['src']
+
+    name = soup.find('span', {'class': 'mw-page-title-main'}).text
+
+    rows = infobox.find_all('tr')
+    infobox_properties = {}
+    for row in rows:
+        th = row.find('th')
+        td = row.find('td')
+        if not (th and td):
+            continue
+        infobox_properties[th.text.strip()] = td.text.strip()
+
+    for prop in INFOBOX_YEAR_PROPERTIES:
+        if prop in infobox_properties:
+            year = infobox_properties[prop]
+            year = CITATION_RE.sub('', year)
+            if prop == 'Built' and DASH_RE.search(year):
+                year = year.split(DASH_RE.search(year).group(1))
+            year = int(year)
+            return {
+                'name': name,
+                'image': image,
+                'year': year,
+            }
+
+    return None
+
+
 
 def deduplicate_buildings(buildings):
     seen_images = set()
