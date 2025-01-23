@@ -9,10 +9,12 @@ INFOBOX_YEAR_PROPERTIES = (
     'Completed',
     'Built',
     'Construction finished',
+    'Opened',
     'Construction started',
 )
 CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
+
 
 def scrape_tallest_buildings_list(page_slug: str):
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
@@ -57,10 +59,10 @@ def scrape_tallest_buildings_list(page_slug: str):
 
     return buildings
 
+
 def scrape_individual_building_page(page_slug):
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
     soup = BeautifulSoup(html, 'html.parser')
-
 
     infobox = soup.find('table', {'class': 'infobox'})
     if infobox is None:
@@ -89,6 +91,13 @@ def scrape_individual_building_page(page_slug):
             year = CITATION_RE.sub('', year)
             if prop == 'Built' and DASH_RE.search(year):
                 year = year.split(DASH_RE.search(year).group(1))
+            elif prop == 'Opened':
+                # Find the first four-digit number in the year string
+                year_match = re.search(r'\b(\d{4})\b', year)
+                if year_match:
+                    year = int(year_match.group(1))
+                else:
+                    continue  # If no year found, skip this property
             year = int(year)
             return {
                 'name': name,
@@ -97,6 +106,9 @@ def scrape_individual_building_page(page_slug):
             }
 
     return None
+
+
+def scrape_category(category_slug)
 
 
 
