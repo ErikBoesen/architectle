@@ -14,20 +14,12 @@
 html, body { height: 100%; }
 body {
   font-family: 'Lexend Deca', sans-serif;
-  background: #089AFD;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+  border-top: solid 9px #089AFD;
 }
 .App {
   text-align: center;
   background: white;
   border-radius: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   padding: 20px;
 }
 a {
@@ -80,9 +72,56 @@ footer {
   font-size: 10px;
 }
 
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: none;
+  opacity: 0;
+  justify-content: center;
+  align-items: center;
+  flex-direction: vertical;
+}
+.popup .content {
+  max-width: 4in;
+  max-height: 90%;
+  overflow: scroll;
+  margin: 10px;
+  padding: 15px 20px 20px;
+  background: white;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.popup .close-button {
+  float: right;
+  height: 20px;
+  cursor: pointer;
+}
+.popup p {
+  margin: 10px 0;
+}
+.popup button {
+  margin-top: 5px;
+}
+.popup.shown {
+  display: flex;
+  opacity: 1;
+}
+.loss.popup {
+
+}
+
 @media (min-width: 800px) {
+  body {
+  }
   .App {
-    min-width: 8in;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   input[type='range'] {
     width: 400px;

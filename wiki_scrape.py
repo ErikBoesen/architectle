@@ -96,7 +96,7 @@ def scrape_individual_building_page(page_slug):
         # would be cool to throw the page content to ChatGPT or something but that would be intense
         return None
 
-    images = infobox.find_all('img', {'class': 'mw-file-element'})
+    images = infobox.select('.infobox-image img.mw-file-element')
     # Skip maps if possible
     filtered_images = [img for img in images if not (img.find_parent('a', class_='mw-kartographer-map') or img.find_parent('div', class_='switcher-container'))]
     if filtered_images:
@@ -118,7 +118,6 @@ def scrape_individual_building_page(page_slug):
     for prop in INFOBOX_YEAR_PROPERTIES:
         if prop in infobox_properties:
             year = infobox_properties[prop]
-            print(year)
             year = CITATION_RE.sub('', year)
             year = year.replace('c.\u2009', '') # remove circa
             if DASH_RE.search(year):
