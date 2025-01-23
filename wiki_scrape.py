@@ -17,6 +17,7 @@ INFOBOX_YEAR_PROPERTIES = (
 CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
 YEAR_RE = re.compile(r'(\d{4})')
+current_year = datetime.date.today().year
 
 scraped_pages = set()
 scraped_categories = set()
@@ -44,7 +45,7 @@ def scrape_tallest_buildings_list(page_slug: str):
         if year == 'On hold':
             continue
         year = int(year)
-        if year >= datetime.date.today().year:
+        if year >= current_year:
             continue
 
         image_cell = cells[COL_INDEX_IMAGE]
@@ -108,19 +109,13 @@ def scrape_individual_building_page(page_slug):
             print(year)
             year = CITATION_RE.sub('', year)
             year = year.replace('c.\u2009', '') # remove circa
-            if prop == 'Built':
-                if DASH_RE.search(year):
-                    year = YEAR_RE.search(year).groups()[-1]
-                else:
-                    year = YEAR_RE.search(year).groups()[0]
-            elif prop in ('Opened', 'Inaugurated', 'Construction finished', 'Completed'):
-                # Find the first four-digit number in the year string
-                year_match = YEAR_RE.search(year)
-                if year_match:
-                    year = int(year_match.group(1))
-                else:
-                    continue  # If no year found, skip this property
+            if DASH_RE.search(year):
+                year = YEAR_RE.search(year).groups()[-1]
+            else:
+                year = YEAR_RE.search(year).groups()[0]
             year = int(year)
+            if year > current_year:
+                return None
             return {
                 'name': name,
                 'image': image,
@@ -153,6 +148,10 @@ def scrape_category(category_slug):
 
     page_links = soup.find('div', {'class': 'mw-category'}).find_all('a')
     for page_link in page_links:
+        print('----' + category_slug)
+        print(page_link)
+        if page_link.get('href') is None:
+            continue
         page_slug = page_link['href'].replace('/wiki/', '')
         building = scrape_individual_building_page(page_slug)
         if building is not None:
@@ -173,7 +172,10 @@ def deduplicate_buildings(buildings):
 
 buildings = []
 buildings += scrape_category('Residential_buildings_in_New_York_City')
+buildings += scrape_category('Commercial_buildings_in_New_York_City')
 buildings += scrape_category('Historic_district_contributing_properties_in_New_York_City')
+buildings += scrape_category('Government_buildings_in_New_York_City')
+buildings += scrape_category('Libraries_in_New_York_City')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_New_York_City')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Brooklyn')
 buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Queens')
