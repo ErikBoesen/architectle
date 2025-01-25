@@ -7,6 +7,7 @@ function App() {
   const [round, setRound] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const [lastGuess, setLastGuess] = useState(null);
+  const [showInstructions, setShowInstructions] = useState(true);
   const [showLossPopup, setShowLossPopup] = useState(false);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ function App() {
     setUserGuess(0);
     setLastGuess(null);
     setShowLossPopup(false);
+    setShowInstructions(false);
   };
 
   const copyToClipboard = () => {
@@ -99,6 +101,16 @@ function App() {
         )}
       </main>
 
+      {showInstructions && (
+        <div className={'instructions popup ' + (showInstructions ? 'shown' : '')}>
+          <div className='content'>
+            <h2>How to Play</h2>
+            <p>Guess the year each NYC building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing witin the correct decade. Good luck!</p>
+            <button onClick={() => setShowInstructions(false)}>Play</button>
+          </div>
+        </div>
+      )}
+
       <div className={'loss popup ' + (showLossPopup ? 'shown' : '')}>
         <div className='content'>
           <h2>You Lost!</h2>
@@ -107,6 +119,7 @@ function App() {
           <button onClick={copyToClipboard}>Share</button>
         </div>
       </div>
+
       <footer>A game by <a href="https://erikboesen.com">Erik Boesen</a>.</footer>
     </div>
   );

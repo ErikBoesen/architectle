@@ -66,6 +66,7 @@ button {
   border-radius: 18px;
   padding: 6px 8px;
   font: inherit;
+  cursor: pointer;
 }
 footer {
   color: #999;
@@ -111,13 +112,8 @@ footer {
   display: flex;
   opacity: 1;
 }
-.loss.popup {
-
-}
 
 @media (min-width: 800px) {
-  body {
-  }
   .App {
     display: flex;
     flex-direction: column;
