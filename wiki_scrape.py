@@ -31,6 +31,12 @@ MANDATORY_CATEGORY_KEYWORDS = (
 scraped_pages = set()
 scraped_categories = set()
 
+def get_original_image(image_page_url: str) -> str:
+    html = requests.get(WIKI_ROOT + image_page_url).text
+    soup = BeautifulSoup(html, 'html.parser')
+    image_url = soup.find('div', {'class': 'fullImageLink'}).find('a')['href']
+    image_url = 'https:' + image_url
+
 def scrape_tallest_buildings_list(page_slug: str):
     print('Scraping tallest buildings list: ' + page_slug)
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
@@ -66,10 +72,7 @@ def scrape_tallest_buildings_list(page_slug: str):
         image_page_url = image_page_url['href']
         if 'UploadWizard' in image_page_url: # Ignore 'Upload image' links
             continue
-        html = requests.get(WIKI_ROOT + image_page_url).text
-        soup = BeautifulSoup(html, 'html.parser')
-        image_url = soup.find('div', {'class': 'fullImageLink'}).find('a')['href']
-        image_url = 'https:' + image_url
+        image_url = get_original_image(image_page_url)
 
         buildings.append({
             'name': name,
@@ -96,13 +99,11 @@ def scrape_individual_building_page(page_slug):
         # would be cool to throw the page content to ChatGPT or something but that would be intense
         return None
 
-    images = infobox.select('.infobox-image img.mw-file-element')
-    # Skip maps if possible
-    filtered_images = [img for img in images if not (img.find_parent('a', class_='mw-kartographer-map') or img.find_parent('div', class_='switcher-container'))]
-    if filtered_images:
-        image = 'https:' + filtered_images[-1]['src']  # Use the last valid image, earlier ones may be logos etc
-    else:
+    image_links = infobox.select('.infobox-image .infobox-image a.mw-file-description')
+    image_links = [link for link in image_links if not '.svg' in link['href']]
+    if not image_links:
         return None
+    # We will get the original image only if all requirements are satisfied at the end
 
     name = soup.find('h1', {'class': 'mw-first-heading'}).text
 
@@ -127,9 +128,10 @@ def scrape_individual_building_page(page_slug):
             year = int(year)
             if year > current_year:
                 return None
+
             return {
                 'name': name,
-                'image': image,
+                'image': get_original_image(image_links[-1]['href']),
                 'year': year,
             }
 
