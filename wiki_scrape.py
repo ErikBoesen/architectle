@@ -32,10 +32,12 @@ scraped_pages = set()
 scraped_categories = set()
 
 def get_original_image(image_page_url: str) -> str:
+    print(image_page_url)
     html = requests.get(WIKI_ROOT + image_page_url).text
     soup = BeautifulSoup(html, 'html.parser')
     image_url = soup.find('div', {'class': 'fullImageLink'}).find('a')['href']
     image_url = 'https:' + image_url
+    return image_url
 
 def scrape_tallest_buildings_list(page_slug: str):
     print('Scraping tallest buildings list: ' + page_slug)
@@ -99,8 +101,9 @@ def scrape_individual_building_page(page_slug):
         # would be cool to throw the page content to ChatGPT or something but that would be intense
         return None
 
-    image_links = infobox.select('.infobox-image .infobox-image a.mw-file-description')
+    image_links = infobox.select('.infobox-image a.mw-file-description')
     image_links = [link for link in image_links if not '.svg' in link['href']]
+    print(image_links)
     if not image_links:
         return None
     # We will get the original image only if all requirements are satisfied at the end
