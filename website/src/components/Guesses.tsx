@@ -6,11 +6,11 @@ function Guesses({ guesses }) {
         let classes = ['guess'];
         if (difference === 0) {
             classes.push('blue')
-        } else if (difference < 10) {
+        } else if (difference > -10) {
             classes.push('green');
-        } else if (difference < 20) {
+        } else if (difference > -20) {
             classes.push('yellow');
-        } else if (difference < 40) {
+        } else if (difference > -40) {
             classes.push('orange');
         } else {
             classes.push('red');
