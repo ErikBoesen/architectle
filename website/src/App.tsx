@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Guesses from './components/Guesses';
+
 import './App.css';
+
+import Guesses from './components/Guesses';
+import Footer from './components/Footer';
 
 function App() {
   const [buildings, setBuildings] = useState([]);
@@ -117,7 +120,7 @@ function App() {
         </div>
       </div>
 
-      <footer>A game by <a href="https://erikboesen.com">Erik Boesen</a>.</footer>
+      <Footer />
     </div>
   );
 }
