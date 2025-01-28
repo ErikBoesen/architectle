@@ -47,7 +47,7 @@ function App() {
     // Dismiss last guess message after 5 seconds
     setTimeout(() => {
         setLastGuesses(prevGuesses => prevGuesses.slice(1)); // Remove the oldest guess
-    }, 5000);
+    }, 50000);
 
     if (lives <= 0) {
       setShowLossPopup(true);
@@ -64,7 +64,7 @@ function App() {
   };
 
   const copyToClipboard = () => {
-    const performanceRecord = `You made it to round ${round} with ${lives} lives left!`;
+    const performanceRecord = `I identified  it to round ${round}!`;
     navigator.clipboard.writeText(performanceRecord);
     alert('Performance copied to clipboard!');
   };
@@ -113,7 +113,7 @@ function App() {
 
       <div className={'loss popup ' + (showLossPopup ? 'shown' : '')}>
         <div className='content'>
-          <h2>You Lost!</h2>
+          <h2>Game over!</h2>
           <p>Congratulations! You made it to round {round}.</p>
           <button onClick={restartGame}>Restart Game</button>
           <button onClick={copyToClipboard}>Share</button>
