@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Guesses from './components/Guesses';
 import './App.css';
 
 function App() {
@@ -92,15 +93,7 @@ function App() {
               />
             </label>
             <button onClick={handleGuess}>Guess</button>
-            <div className='guesses'>
-              {lastGuesses.map((guess, index) => (
-                <div key={index} className='guess'>
-                  <p>
-                    <a href={'https://en.wikipedia.org/wiki/' + guess.building.name.replace(' ', '_')}>{guess.building.name}</a> was finished in {guess.building.year}, you guessed {guess.guessedYear}. {guess.correct ? 'Perfect guess!' : `${guess.difference} lives!`}
-                  </p>
-                </div>
-              ))}
-              </div>
+            <Guesses guesses={lastGuesses} />
           </div>
         )}
       </main>
