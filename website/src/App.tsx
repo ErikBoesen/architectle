@@ -42,12 +42,12 @@ function App() {
         correct: correctYear === userGuess,
     };
 
-    setLastGuesses(prevGuesses => [...prevGuesses, newGuess]); // Add new guess to the queue
+    setLastGuesses(prevGuesses => [newGuess, ...prevGuesses]); // Add new guess to the queue
 
     // Dismiss last guess message after 5 seconds
     setTimeout(() => {
-        setLastGuesses(prevGuesses => prevGuesses.slice(1)); // Remove the oldest guess
-    }, 50000);
+        setLastGuesses(prevGuesses => prevGuesses.pop()); // Remove the oldest guess
+    }, 5000);
 
     if (lives <= 0) {
       setShowLossPopup(true);

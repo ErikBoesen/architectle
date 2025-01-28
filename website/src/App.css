@@ -128,7 +128,9 @@ footer {
   width: 100%;
   padding: 15px;
   border: solid 3px transparent;
+  border-radius: 8px;
   z-index: 10;
+  margin-bottom: 10px;
 }
 .guess.blue {
   border-color: #089AFD;
