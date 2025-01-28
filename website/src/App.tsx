@@ -46,7 +46,7 @@ function App() {
 
     // Dismiss last guess message after 5 seconds
     setTimeout(() => {
-        setLastGuesses(prevGuesses => prevGuesses.pop()); // Remove the oldest guess
+        setLastGuesses(prevGuesses => prevGuesses.slice(0, prevGuesses.length - 1)); // Remove the oldest guess
     }, 5000);
 
     if (lives <= 0) {
