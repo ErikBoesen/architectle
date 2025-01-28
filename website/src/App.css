@@ -113,6 +113,18 @@ footer {
   opacity: 1;
 }
 
+.guesses {
+  position: absolute;
+  top: 20px;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.guess {
+  width: 100vw;
+}
+
 @media (min-width: 800px) {
   .App {
     display: flex;
@@ -121,5 +133,8 @@ footer {
   }
   input[type='range'] {
     width: 400px;
+  }
+  .guess {
+    width: 5in;
   }
 }

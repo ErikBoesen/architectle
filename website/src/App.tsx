@@ -6,7 +6,7 @@ function App() {
   const [lives, setLives] = useState(100);
   const [round, setRound] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
-  const [lastGuess, setLastGuess] = useState(null);
+  const [lastGuesses, setLastGuesses] = useState([]);
   const [showInstructions, setShowInstructions] = useState(true);
   const [showLossPopup, setShowLossPopup] = useState(false);
 
@@ -31,16 +31,18 @@ function App() {
     setUserGuess(0); // Reset user guess
 
     // Set last guess details
-    setLastGuess({
+    const newGuess = {
         building: buildings[round],
         guessedYear: userGuess,
         difference: difference,
         correct: correctYear === userGuess,
-    });
+    };
+
+    setLastGuesses(prevGuesses => [...prevGuesses, newGuess]); // Add new guess to the queue
 
     // Dismiss last guess message after 5 seconds
     setTimeout(() => {
-        setLastGuess(null);
+        setLastGuesses(prevGuesses => prevGuesses.slice(1)); // Remove the oldest guess
     }, 5000);
 
     if (lives <= 0) {
@@ -52,7 +54,7 @@ function App() {
     setLives(100);
     setRound(0);
     setUserGuess(0);
-    setLastGuess(null);
+    setLastGuesses([]);
     setShowLossPopup(false);
     setShowInstructions(false);
   };
@@ -90,13 +92,15 @@ function App() {
               />
             </label>
             <button onClick={handleGuess}>Guess</button>
-            {lastGuess && (
-              <div>
-                <p>
-                   <a href={'https://en.wikipedia.org/wiki/' + lastGuess.building.name.replace(' ', '_')}>{lastGuess.building.name}</a> was finished in {lastGuess.building.year}, you guessed {lastGuess.guessedYear}. {lastGuess.correct ? 'Perfect guess!' : `${lastGuess.difference} lives!`}
-                </p>
+            <div className='guesses'>
+              {lastGuesses.map((guess, index) => (
+                <div key={index} className='guess'>
+                  <p>
+                    <a href={'https://en.wikipedia.org/wiki/' + guess.building.name.replace(' ', '_')}>{guess.building.name}</a> was finished in {guess.building.year}, you guessed {guess.guessedYear}. {guess.correct ? 'Perfect guess!' : `${guess.difference} lives!`}
+                  </p>
+                </div>
+              ))}
               </div>
-            )}
           </div>
         )}
       </main>
@@ -105,7 +109,7 @@ function App() {
         <div className={'instructions popup ' + (showInstructions ? 'shown' : '')}>
           <div className='content'>
             <h2>How to Play</h2>
-            <p>Guess the year each NYC building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing witin the correct decade. Good luck!</p>
+            <p>Guess the year each NYC building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing witin the correct decade. Good luck!</p>
             <button onClick={() => setShowInstructions(false)}>Play</button>
           </div>
         </div>
