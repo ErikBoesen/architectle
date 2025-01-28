@@ -27,6 +27,9 @@ MANDATORY_CATEGORY_KEYWORDS = (
     'Queens',
     'Staten_Island',
 )
+IGNORED_PAGES = {
+    'Butterfield_House_(New_York_City)'
+}
 
 scraped_pages = set()
 scraped_categories = set()
@@ -89,6 +92,9 @@ def scrape_tallest_buildings_list(page_slug: str):
 def scrape_individual_building_page(page_slug):
     if page_slug in scraped_pages:
         print('Skipping already scraped page ' + page_slug)
+        return None
+    if page_slug in IGNORED_PAGES:
+        print('Skipping ignored page ' + page_slug)
         return None
     scraped_pages.add(page_slug)
 
