@@ -18,8 +18,13 @@ function App() {
     const fetchBuildings = async () => {
       const response = await fetch('buildings.json');
       const data = await response.json();
-      // Shuffle the buildings array
-      const shuffledBuildings = data.sort(() => Math.random() - 0.5);
+
+      // Shuffle the buildings array using Fisher-Yates algorithm
+      const shuffledBuildings = data.slice(); // Create a copy of the array
+      for (let i = shuffledBuildings.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledBuildings[i], shuffledBuildings[j]] = [shuffledBuildings[j], shuffledBuildings[i]]; // Swap elements
+      }
       setBuildings(shuffledBuildings);
     };
 
