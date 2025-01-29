@@ -18,11 +18,11 @@ function Guesses({ guesses }) {
         return classes.join(' ');
     };
 
-    const getEvaluation = (difference) => {
-        if (difference === 0) {
+    const getEvaluation = (difference, correct) => {
+        if (correct) {
             return 'Perfect guess!';
         } else if (difference > 0) {
-            return `+{guess.difference} bonus lives!`;
+            return `+${difference} bonus lives!`;
         }
         return `${difference} lives!`;
     };
@@ -32,7 +32,7 @@ function Guesses({ guesses }) {
             {guesses.map((guess, index) => (
             <div key={index} className={getClasses(guess.difference)}>
                 <p>
-                    <a href={'https://en.wikipedia.org/wiki/' + guess.building.name.replace(' ', '_')}>{guess.building.name}</a> was finished in {guess.building.year}, you guessed {guess.guessedYear}. {getEvaluation(guess.difference)}
+                    <a href={'https://en.wikipedia.org/wiki/' + guess.building.name.replace(' ', '_')}>{guess.building.name}</a> was finished in {guess.building.year}, you guessed {guess.guessedYear}. {getEvaluation(guess.difference, guess.correct)}
                 </p>
             </div>
             ))}

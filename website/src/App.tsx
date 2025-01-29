@@ -29,7 +29,7 @@ function App() {
   const handleGuess = () => {
     const correctYear = buildings[round].year;
     let difference = Math.abs(correctYear - userGuess);
-    difference = 10 - difference;
+    difference = 20 - difference;
     setLives(prevScore => Math.max(prevScore + difference, 0));
     setRound(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
     setUserGuess(0); // Reset user guess
