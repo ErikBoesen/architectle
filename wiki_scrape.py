@@ -193,18 +193,32 @@ def deduplicate_buildings(buildings):
 
     return unique_buildings
 
-buildings = []
-buildings += scrape_category('Residential_buildings_in_New_York_City')
-buildings += scrape_category('Commercial_buildings_in_New_York_City')
-buildings += scrape_category('Historic_district_contributing_properties_in_New_York_City')
-buildings += scrape_category('Government_buildings_in_New_York_City')
-buildings += scrape_category('Libraries_in_New_York_City')
-buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_New_York_City')
-buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Brooklyn')
-buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Queens')
-buildings += scrape_tallest_buildings_list('List_of_tallest_buildings_in_Staten_Island')
+def scrape_city(name: str, category_slugs=(), building_slugs=()):
+    buildings = []
+    for category_slug in category_slugs:
+        buildings += scrape_category(category_slug)
 
-buildings = deduplicate_buildings(buildings)
+    for building_slug in building_slugs:
+        buildings += scrape_tallest_buildings_list(building_slug)
 
-with open('website/public/buildings.json', 'w') as f:
-    json.dump(buildings, f)
+    buildings = deduplicate_buildings(buildings)
+
+    with open('website/public/buildings_{name}.json', 'w') as f:
+        json.dump(buildings, f)
+
+scrape_city(
+    'NYC',
+    category_slugs=(
+        'Residential_buildings_in_New_York_City',
+        'Commercial_buildings_in_New_York_City',
+        'Historic_district_contributing_properties_in_New_York_City',
+        'Government_buildings_in_New_York_City',
+        'Libraries_in_New_York_City',
+    ),
+    building_slug=(
+        'List_of_tallest_buildings_in_New_York_City',
+        'List_of_tallest_buildings_in_Brooklyn',
+        'List_of_tallest_buildings_in_Queens',
+        'List_of_tallest_buildings_in_Staten_Island',
+    ),
+)
