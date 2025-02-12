@@ -18,15 +18,6 @@ CITATION_RE = re.compile(r'\s*\[\d+\]|\s*\[[a-z]\]')
 DASH_RE = re.compile(r'[\u2013\u2014-]')
 YEAR_RE = re.compile(r'(\d{4})')
 current_year = datetime.date.today().year
-MANDATORY_CATEGORY_KEYWORDS = (
-    'New_York',
-    'New_York_City',
-    'Manhattan',
-    'Brooklyn',
-    'Bronx',
-    'Queens',
-    'Staten_Island',
-)
 IGNORED_PAGES = {
     'Butterfield_House_(New_York_City)'
 }
@@ -147,8 +138,8 @@ def scrape_individual_building_page(page_slug):
     return None
 
 
-def scrape_category(category_slug):
-    if not any(category_slug.endswith(keyword) for keyword in MANDATORY_CATEGORY_KEYWORDS):
+def scrape_category(category_slug, mandatory_category_keywords):
+    if mandatory_category_keywords is not None and not any(category_slug.endswith(keyword) for keyword in mandatory_category_keywords):
         print('Skipping category ' + category_slug + ' as it does not contain mandatory keywords.')
         return []  # Early exit if no mandatory keywords are found
 
@@ -169,7 +160,7 @@ def scrape_category(category_slug):
             continue
         subcategory_slug = link['href'].replace('/wiki/Category:', '')
         print('Recursing on subcategory ' + subcategory_slug)
-        buildings += scrape_category(subcategory_slug)
+        buildings += scrape_category(subcategory_slug, mandatory_category_keywords)
 
     page_links = soup.find('div', {'class': 'mw-category'}).find_all('a')
     for page_link in page_links:
@@ -193,19 +184,31 @@ def deduplicate_buildings(buildings):
 
     return unique_buildings
 
-def scrape_city(name: str, category_slugs=(), building_slugs=()):
+def scrape_city(name: str, category_slugs=(), building_slugs=(), mandatory_category_keywords=None):
     buildings = []
     for category_slug in category_slugs:
-        buildings += scrape_category(category_slug)
+        buildings += scrape_category(category_slug, mandatory_category_keywords)
 
     for building_slug in building_slugs:
         buildings += scrape_tallest_buildings_list(building_slug)
 
     buildings = deduplicate_buildings(buildings)
 
-    with open('website/public/buildings_{name}.json', 'w') as f:
+    with open(f'website/public/buildings_{name}.json', 'w') as f:
         json.dump(buildings, f)
+# TODO: Have the person also choose what city it is and whether it's
+scrape_city(
+    'Chicago',
+    category_slugs=(
+        'Buildings_and_structures_in_Chicago',
+    ),
+    building_slugs=(
 
+    ),
+    mandatory_category_keywords=(
+        'Chicago',
+    ),
+)
 scrape_city(
     'NYC',
     category_slugs=(
@@ -215,10 +218,19 @@ scrape_city(
         'Government_buildings_in_New_York_City',
         'Libraries_in_New_York_City',
     ),
-    building_slug=(
+    building_slugs=(
         'List_of_tallest_buildings_in_New_York_City',
         'List_of_tallest_buildings_in_Brooklyn',
         'List_of_tallest_buildings_in_Queens',
         'List_of_tallest_buildings_in_Staten_Island',
     ),
+    mandatory_category_keywords=(
+        'New_York',
+        'New_York_City',
+        'Manhattan',
+        'Brooklyn',
+        'Bronx',
+        'Queens',
+        'Staten_Island',
+    )
 )
