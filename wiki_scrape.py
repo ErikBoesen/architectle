@@ -21,6 +21,14 @@ current_year = datetime.date.today().year
 IGNORED_PAGES = {
     'Butterfield_House_(New_York_City)'
 }
+IGNORED_CATEGORY_KEYWORDS = {
+    'Demolished',
+    'Former',
+}
+IGNORED_PAGE_KEYWORDS = {
+    'locator',
+    'map',
+}
 
 scraped_pages = set()
 scraped_categories = set()
@@ -139,6 +147,9 @@ def scrape_individual_building_page(page_slug):
 
 
 def scrape_category(category_slug, mandatory_category_keywords):
+    if any(keyword in category_slug for keyword in IGNORED_CATEGORY_KEYWORDS):
+        print('Skipping category ' + category_slug + ' because it contains banned keywords.')
+        return []
     if mandatory_category_keywords is not None and not any(category_slug.endswith(keyword) for keyword in mandatory_category_keywords):
         print('Skipping category ' + category_slug + ' as it does not contain mandatory keywords.')
         return []  # Early exit if no mandatory keywords are found
