@@ -69,8 +69,22 @@ function App() {
   };
 
   const copyToClipboard = () => {
-    const performanceRecord = `I identified  it to round ${round}!`;
-    navigator.clipboard.writeText(performanceRecord);
+    const performanceRecord = `I identified it to round ${round}!`;
+    let emojiPerformance = '';
+
+    lastGuesses.forEach(guess => {
+        const difference = Math.abs(guess.building.year - guess.guessedYear);
+        if (difference === 0) {
+            emojiPerformance += '🟩'; // Green for correct guess
+        } else if (difference <= 5) {
+            emojiPerformance += '🟨'; // Yellow for close guess
+        } else {
+            emojiPerformance += '🟥'; // Red for far off guess
+        }
+    });
+
+    const fullRecord = `${performanceRecord} ${emojiPerformance}`;
+    navigator.clipboard.writeText(fullRecord);
     alert('Performance copied to clipboard!');
   };
 
