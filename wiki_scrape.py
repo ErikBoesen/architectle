@@ -26,6 +26,8 @@ IGNORED_CATEGORY_KEYWORDS = {
     'Former',
 }
 IGNORED_PAGE_KEYWORDS = {
+}
+IGNORED_IMAGE_KEYWORDS = {
     'locator',
     'map',
 }
@@ -78,6 +80,10 @@ def scrape_tallest_buildings_list(page_slug: str):
             continue
         image_url = get_original_image(image_page_url)
 
+        # Check if the image URL contains any ignored keywords
+        if any(keyword in image_url for keyword in IGNORED_IMAGE_KEYWORDS):
+            continue  # Skip this image if it contains ignored keywords
+
         buildings.append({
             'name': name,
             'image': image_url,
@@ -111,7 +117,10 @@ def scrape_individual_building_page(page_slug):
 
     image_links = infobox.select('.infobox-image a.mw-file-description')
     image_links = [link for link in image_links if not '.svg' in link['href']]
-    print(image_links)
+
+    # Filter out images with ignored keywords
+    image_links = [link for link in image_links if not any(keyword in link['href'] for keyword in IGNORED_IMAGE_KEYWORDS)]
+
     if not image_links:
         return None
     # We will get the original image only if all requirements are satisfied at the end
