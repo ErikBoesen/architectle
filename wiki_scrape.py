@@ -95,6 +95,9 @@ def scrape_individual_building_page(page_slug):
     if page_slug in IGNORED_PAGES:
         print('Skipping ignored page ' + page_slug)
         return None
+    if any(keyword in page_slug for keyword in IGNORED_PAGE_KEYWORDS):
+        print('Skipping page ' + page_slug + ' because it contains ignored keywords.')
+        return None
     scraped_pages.add(page_slug)
 
     print('Scraping individual page: ' + page_slug)
