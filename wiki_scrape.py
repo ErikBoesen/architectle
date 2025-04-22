@@ -24,12 +24,15 @@ IGNORED_PAGES = {
 IGNORED_CATEGORY_KEYWORDS = {
     'Demolished',
     'Former',
+    'Railway',
+    'Sculptures',
 }
 IGNORED_PAGE_KEYWORDS = {
 }
 IGNORED_IMAGE_KEYWORDS = {
     'locator',
     'map',
+
 }
 
 scraped_pages = set()
