@@ -37,6 +37,7 @@ IGNORED_IMAGE_KEYWORDS = {
 
 scraped_pages = set()
 scraped_categories = set()
+all_buildings = []  # List to hold buildings from all cities
 
 def get_original_image(image_page_url: str) -> str:
     print(image_page_url)
@@ -211,6 +212,7 @@ def deduplicate_buildings(buildings):
     return unique_buildings
 
 def scrape_city(name: str, category_slugs=(), building_slugs=(), mandatory_category_keywords=None):
+    global all_buildings  # Use the global list to store buildings
     buildings = []
     for category_slug in category_slugs:
         buildings += scrape_category(category_slug, mandatory_category_keywords)
@@ -220,8 +222,15 @@ def scrape_city(name: str, category_slugs=(), building_slugs=(), mandatory_categ
 
     buildings = deduplicate_buildings(buildings)
 
+    # Mark each building with the city name
+    for building in buildings:
+        building['city'] = name  # Add city name to each building
+
+    all_buildings += buildings  # Append to the global list
+
     with open(f'website/public/buildings_{name}.json', 'w') as f:
         json.dump(buildings, f)
+
 # TODO: Have the person also choose what city it is and whether it's
 scrape_city(
     'Chicago',
@@ -260,3 +269,7 @@ scrape_city(
         'Staten_Island',
     )
 )
+
+# After scraping all cities, write the combined results to one file
+with open('website/public/buildings.json', 'w') as f:
+    json.dump(all_buildings, f)  # Write all buildings to a single file
