@@ -11,8 +11,9 @@ function App() {
   const [round, setRound] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const [lastGuesses, setLastGuesses] = useState([]);
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
   const [showLossPopup, setShowLossPopup] = useState(false);
+  const [selectedCity, setSelectedCity] = useState(null);
 
   useEffect(() => {
     const fetchBuildings = async () => {
@@ -30,6 +31,11 @@ function App() {
 
     fetchBuildings();
   }, []);
+
+  const handleCitySelection = (city) => {
+    setSelectedCity(city);
+    setShowIntro(false);
+  };
 
   const handleGuess = () => {
     const correctYear = buildings[round].year;
@@ -65,7 +71,7 @@ function App() {
     setUserGuess(0);
     setLastGuesses([]);
     setShowLossPopup(false);
-    setShowInstructions(false);
+    setShowIntro(false);
   };
 
   const copyToClipboard = () => {
@@ -120,12 +126,12 @@ function App() {
         )}
       </main>
 
-      {showInstructions && (
-        <div className={'instructions popup ' + (showInstructions ? 'shown' : '')}>
+      {showIntro && (
+        <div className={'instructions popup ' + (showIntro ? 'shown' : '')}>
           <div className='content'>
             <h2>How to Play</h2>
             <p>Guess the year each NYC building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing witin the correct decade. Good luck!</p>
-            <button onClick={() => setShowInstructions(false)}>Play</button>
+            <button onClick={() => setShowIntro(false)}>Play</button>
           </div>
         </div>
       )}
