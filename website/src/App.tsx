@@ -5,6 +5,8 @@ import './App.css';
 import Guesses from './components/Guesses';
 import Footer from './components/Footer';
 
+const CITIES = ['All', 'NYC', 'Chicago'];
+
 function App() {
   const [buildings, setBuildings] = useState([]);
   const [lives, setLives] = useState(100);
@@ -130,8 +132,11 @@ function App() {
         <div className={'instructions popup ' + (showIntro ? 'shown' : '')}>
           <div className='content'>
             <h2>How to Play</h2>
-            <p>Guess the year each NYC building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing witin the correct decade. Good luck!</p>
-            <button onClick={() => setShowIntro(false)}>Play</button>
+            <p>Guess the year each building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing witin the correct decade. Good luck!</p>
+            <h3>Pick a city:</h3>
+            {CITIES.forEach((city) => {
+              <button key={city} onClick={() => handleCitySelection(city)}>{city}</button>
+            })}
           </div>
         </div>
       )}
@@ -140,8 +145,9 @@ function App() {
         <div className='content'>
           <h2>Game over!</h2>
           <p>Congratulations! You made it to round {round}.</p>
-          <button onClick={restartGame}>Restart Game</button>
           <button onClick={copyToClipboard}>Share</button>
+          <button onClick={restartGame}>Restart Game</button>
+          <button onClick={() => handleCitySelection(null)}>Switch Cities</button>
         </div>
       </div>
 
