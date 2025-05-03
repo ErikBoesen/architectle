@@ -244,7 +244,7 @@ def scrape_city(name: str, category_slugs=(), building_slugs=(), mandatory_categ
 
 # TODO: Have the person also choose what city it is and whether it's
 scrape_city(
-    'Chicago',
+    'chicago',
     category_slugs=(
         'Buildings_and_structures_in_Chicago',
     ),
@@ -256,7 +256,7 @@ scrape_city(
     ),
 )
 scrape_city(
-    'NYC',
+    'nyc',
     category_slugs=(
         'Residential_buildings_in_New_York_City',
         'Commercial_buildings_in_New_York_City',
@@ -281,7 +281,7 @@ scrape_city(
     )
 )
 scrape_city(
-    'Los Angeles',
+    'la',
     category_slugs=(
         'Buildings_and_structures_in_Los_Angeles',
     ),
