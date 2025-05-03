@@ -5,7 +5,11 @@ import './App.css';
 import Guesses from './components/Guesses';
 import Footer from './components/Footer';
 
-const CITIES = ['All', 'NYC', 'Chicago'];
+const CITIES = {
+  all: 'All',
+  nyc: 'NYC',
+  chicago: 'Chicago',
+};
 
 function App() {
   const [allBuildings, setAllBuildings] = useState([]);
@@ -14,7 +18,7 @@ function App() {
   const [round, setRound] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const [lastGuesses, setLastGuesses] = useState([]);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState();
   const [showLossPopup, setShowLossPopup] = useState(false);
   const [selectedCity, setSelectedCity] = useState(null);
 
@@ -29,6 +33,19 @@ function App() {
 
     fetchBuildings();
   }, []);
+
+  useEffect(() => {
+    const cityFromUrl = window.location.pathname.split('/')[1]; // Get city from URL
+    if (cityFromUrl && CITIES[cityFromUrl]) {
+      setSelectedCity(CITIES[cityFromUrl]); // Use mapped city name
+    }
+  }, []); // Run only on initial load
+
+  useEffect(() => {
+    if (selectedCity) {
+      window.history.pushState(null, '', `/${selectedCity.toLowerCase()}`);
+    }
+  }, [selectedCity]); // Update URL when selectedCity changes
 
   const fillBuildingQueue = (city) => {
     console.log('Current city selected ' + city);
@@ -147,8 +164,8 @@ function App() {
             <h2>How to Play</h2>
             <p>Guess the year each building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing within the correct decade. Good luck!</p>
             <h3>Pick a city:</h3>
-            {CITIES.map((city) =>
-              <button key={city} onClick={() => handleCitySelection(city)}>{city}</button>
+            {Object.keys(CITIES).map((slug) =>
+              <button key={slug} onClick={() => handleCitySelection(slug)}>{CITIES[slug]}</button>
             )}
           </div>
         </div>
