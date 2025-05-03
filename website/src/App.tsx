@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 const CITIES = ['All', 'NYC', 'Chicago'];
 
 function App() {
+  const [allBuildings, setAllBuildings] = useState([]);
   const [buildings, setBuildings] = useState([]);
   const [lives, setLives] = useState(100);
   const [round, setRound] = useState(0);
@@ -22,17 +23,25 @@ function App() {
       const response = await fetch('buildings.json');
       const data = await response.json();
 
-      // Shuffle the buildings array using Fisher-Yates algorithm
-      const shuffledBuildings = data.slice(); // Create a copy of the array
-      for (let i = shuffledBuildings.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledBuildings[i], shuffledBuildings[j]] = [shuffledBuildings[j], shuffledBuildings[i]]; // Swap elements
-      }
-      setBuildings(shuffledBuildings);
+      setAllBuildings(data);
+      fillBuildingQueue();
     };
 
     fetchBuildings();
   }, []);
+
+  const fillBuildingQueue = () => {
+      let queue = allBuildings.slice(); // Create a copy of the array
+      if (selectedCity && selectedCity !== 'All') {
+        queue = queue.filter(building => building.city === selectedCity);
+      }
+      // Shuffle buildings
+      for (let i = queue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [queue[i], queue[j]] = [queue[j], queue[i]]; // Swap elements
+      }
+      setBuildings(queue);
+  };
 
   const handleCitySelection = (city) => {
     setSelectedCity(city);
@@ -68,6 +77,7 @@ function App() {
   };
 
   const restartGame = () => {
+    fillBuildingQueue();
     setLives(100);
     setRound(0);
     setUserGuess(0);
@@ -132,11 +142,11 @@ function App() {
         <div className={'instructions popup ' + (showIntro ? 'shown' : '')}>
           <div className='content'>
             <h2>How to Play</h2>
-            <p>Guess the year each building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing witin the correct decade. Good luck!</p>
+            <p>Guess the year each building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing within the correct decade. Good luck!</p>
             <h3>Pick a city:</h3>
-            {CITIES.forEach((city) => {
+            {CITIES.map((city) =>
               <button key={city} onClick={() => handleCitySelection(city)}>{city}</button>
-            })}
+            )}
           </div>
         </div>
       )}
