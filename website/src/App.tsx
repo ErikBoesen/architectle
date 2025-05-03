@@ -24,27 +24,30 @@ function App() {
       const data = await response.json();
 
       setAllBuildings(data);
-      fillBuildingQueue();
+      // fillBuildingQueue();
     };
 
     fetchBuildings();
   }, []);
 
-  const fillBuildingQueue = () => {
-      let queue = allBuildings.slice(); // Create a copy of the array
-      if (selectedCity && selectedCity !== 'All') {
-        queue = queue.filter(building => building.city === selectedCity);
-      }
-      // Shuffle buildings
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]]; // Swap elements
-      }
-      setBuildings(queue);
+  const fillBuildingQueue = (city) => {
+    console.log('Current city selected ' + city);
+    let queue = allBuildings.slice(); // Copy array
+    if (selectedCity && selectedCity !== 'All') {
+      queue = queue.filter(building => building.city === city);
+    }
+    // Shuffle buildings
+    for (let i = queue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [queue[i], queue[j]] = [queue[j], queue[i]]; // Swap elements
+    }
+    setBuildings(queue);
   };
 
   const handleCitySelection = (city) => {
     setSelectedCity(city);
+    console.log('Just set city to ' + city);
+    fillBuildingQueue(city);
     setShowIntro(false);
   };
 
@@ -77,7 +80,7 @@ function App() {
   };
 
   const restartGame = () => {
-    fillBuildingQueue();
+    fillBuildingQueue(selectedCity);
     setLives(100);
     setRound(0);
     setUserGuess(0);
