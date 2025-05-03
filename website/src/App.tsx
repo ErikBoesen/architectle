@@ -12,34 +12,32 @@ const CITIES = {
 };
 
 function App() {
-  const [allBuildings, setAllBuildings] = useState([]);
-  const [buildings, setBuildings] = useState([]);
+  const [buildingsAll, setBuildingsAll] = useState([]);
+  const [buildingsQueue, setBuildingsQueue] = useState([]);
   const [lives, setLives] = useState(100);
   const [round, setRound] = useState(0);
   const [userGuess, setUserGuess] = useState(0);
   const [lastGuesses, setLastGuesses] = useState([]);
-  const [showIntro, setShowIntro] = useState();
+  const [showIntro, setShowIntro] = useState(false);
   const [showLossPopup, setShowLossPopup] = useState(false);
   const [selectedCity, setSelectedCity] = useState(null);
 
   useEffect(() => {
+    const cityFromUrl = window.location.pathname.split('/')[1]; // Get city from URL
+    if (cityFromUrl) {
+      setSelectedCity(cityFromUrl);
+    } else {
+      setShowIntro(true);
+    }
     const fetchBuildings = async () => {
       const response = await fetch('buildings.json');
       const data = await response.json();
 
-      setAllBuildings(data);
-      // fillBuildingQueue();
+      setBuildingsAll(data);
     };
 
     fetchBuildings();
   }, []);
-
-  useEffect(() => {
-    const cityFromUrl = window.location.pathname.split('/')[1]; // Get city from URL
-    if (cityFromUrl && CITIES[cityFromUrl]) {
-      setSelectedCity(CITIES[cityFromUrl]); // Use mapped city name
-    }
-  }, []); // Run only on initial load
 
   useEffect(() => {
     if (selectedCity) {
@@ -47,9 +45,9 @@ function App() {
     }
   }, [selectedCity]); // Update URL when selectedCity changes
 
-  const fillBuildingQueue = (city) => {
+  const fillBuildingQueue = (buildings, city) => {
     console.log('Current city selected ' + city);
-    let queue = allBuildings.slice(); // Copy array
+    let queue = buildings.slice(); // Copy array
     if (selectedCity && selectedCity !== 'All') {
       queue = queue.filter(building => building.city === city);
     }
@@ -58,27 +56,31 @@ function App() {
       const j = Math.floor(Math.random() * (i + 1));
       [queue[i], queue[j]] = [queue[j], queue[i]]; // Swap elements
     }
-    setBuildings(queue);
+    setBuildingsQueue(queue);
   };
+
+  useEffect(() => {
+    if (buildingsAll.length != 0 && selectedCity !== null) {
+      fillBuildingQueue(buildingsAll, selectedCity);
+    }
+  }, [buildingsAll, selectedCity])
 
   const handleCitySelection = (city) => {
     setSelectedCity(city);
-    console.log('Just set city to ' + city);
-    fillBuildingQueue(city);
     setShowIntro(false);
   };
 
   const handleGuess = () => {
-    const correctYear = buildings[round].year;
+    const correctYear = buildingsQueue[round].year;
     let difference = Math.abs(correctYear - userGuess);
     difference = 20 - difference;
     setLives(prevScore => Math.max(prevScore + difference, 0));
-    setRound(prevIndex => (prevIndex + 1) % buildings.length); // Move to next building
+    setRound(prevIndex => (prevIndex + 1) % buildingsQueue.length); // Move to next building
     setUserGuess(0); // Reset user guess
 
     // Set last guess details
     const newGuess = {
-        building: buildings[round],
+        building: buildingsQueue[round],
         guessedYear: userGuess,
         difference: difference,
         correct: correctYear === userGuess,
@@ -97,7 +99,7 @@ function App() {
   };
 
   const restartGame = () => {
-    fillBuildingQueue(selectedCity);
+    fillBuildingQueue(buildingsAll, selectedCity);
     setLives(100);
     setRound(0);
     setUserGuess(0);
@@ -139,9 +141,9 @@ function App() {
         </div>
       </header>
       <main>
-        {buildings.length > 0 && (
+        {buildingsQueue.length > 0 && (
           <div>
-            <img className='photo' src={buildings[round].image} alt={buildings[round].name} />
+            <img className='photo' src={buildingsQueue[round].image} alt={buildingsQueue[round].name} />
             <p>{userGuess === 0 ? 'Guess the year this building was built:' : userGuess}</p>
             <label>
               <input
