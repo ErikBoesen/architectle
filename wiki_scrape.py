@@ -3,6 +3,7 @@ import datetime
 import json
 from bs4 import BeautifulSoup
 import re
+import os
 
 WIKI_ROOT = 'https://en.wikipedia.org'
 INFOBOX_YEAR_PROPERTIES = (
@@ -214,6 +215,16 @@ def deduplicate_buildings(buildings):
 def scrape_city(name: str, category_slugs=(), building_slugs=(), mandatory_category_keywords=None):
     global all_buildings  # Use the global list to store buildings
     buildings = []
+
+    # Check if the file already exists
+    json_file_path = f'website/public/buildings_{name}.json'
+    if os.path.exists(json_file_path):
+        print(f'Loading existing data from {json_file_path}')
+        with open(json_file_path, 'r') as f:
+            buildings = json.load(f)
+        all_buildings += buildings
+        return
+
     for category_slug in category_slugs:
         buildings += scrape_category(category_slug, mandatory_category_keywords)
 
@@ -228,7 +239,7 @@ def scrape_city(name: str, category_slugs=(), building_slugs=(), mandatory_categ
 
     all_buildings += buildings  # Append to the global list
 
-    with open(f'website/public/buildings_{name}.json', 'w') as f:
+    with open(json_file_path, 'w') as f:
         json.dump(buildings, f)
 
 # TODO: Have the person also choose what city it is and whether it's
@@ -267,6 +278,18 @@ scrape_city(
         'Bronx',
         'Queens',
         'Staten_Island',
+    )
+)
+scrape_city(
+    'Los Angeles',
+    category_slugs=(
+        'Buildings_and_structures_in_Los_Angeles',
+    ),
+    building_slugs=(
+        'List_of_tallest_buildings_in_Los_Angeles',
+    ),
+    mandatory_category_keywords=(
+        'Los_Angeles',
     )
 )
 
