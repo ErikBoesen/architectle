@@ -48,7 +48,7 @@ function App() {
   const fillBuildingQueue = (buildings, city) => {
     console.log('Current city selected ' + city);
     let queue = buildings.slice(); // Copy array
-    if (selectedCity && selectedCity !== 'All') {
+    if (city && city !== 'all') {
       queue = queue.filter(building => building.city === city);
     }
     // Shuffle buildings
@@ -60,7 +60,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (buildingsAll.length != 0 && selectedCity !== null) {
+    if (buildingsAll.length !== 0 && selectedCity !== null) {
       fillBuildingQueue(buildingsAll, selectedCity);
     }
   }, [buildingsAll, selectedCity])
@@ -109,17 +109,21 @@ function App() {
   };
 
   const copyToClipboard = () => {
-    const performanceRecord = `I identified it to round ${round}!`;
+    const performanceRecord = `I made it to round ${round}! architectle.com`;
     let emojiPerformance = '';
 
     lastGuesses.forEach(guess => {
         const difference = Math.abs(guess.building.year - guess.guessedYear);
         if (difference === 0) {
-            emojiPerformance += '🟩'; // Green for correct guess
-        } else if (difference <= 5) {
-            emojiPerformance += '🟨'; // Yellow for close guess
+          emojiPerformance += '⭐️';
+        } else if (difference > -10) {
+          emojiPerformance += '🟩';
+        } else if (difference > -20) {
+          emojiPerformance += '🟨';
+        } else if (difference > -40) {
+          emojiPerformance += '🟧';
         } else {
-            emojiPerformance += '🟥'; // Red for far off guess
+          emojiPerformance += '🟥';
         }
     });
 
