@@ -20,7 +20,8 @@ DASH_RE = re.compile(r'[\u2013\u2014-]')
 YEAR_RE = re.compile(r'(\d{4})')
 current_year = datetime.date.today().year
 IGNORED_PAGES = {
-    'Butterfield_House_(New_York_City)'
+    'Butterfield_House_(New_York_City)',
+    'C-Squat',
 }
 IGNORED_CATEGORY_KEYWORDS = {
     'Demolished',
@@ -33,7 +34,6 @@ IGNORED_PAGE_KEYWORDS = {
 IGNORED_IMAGE_KEYWORDS = {
     'locator',
     'map',
-
 }
 
 scraped_pages = set()
