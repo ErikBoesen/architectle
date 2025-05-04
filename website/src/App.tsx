@@ -7,7 +7,7 @@ import Game from './components/Game';
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/:city" element={<Game />} />
         <Route path="/" element={<Game />} />
