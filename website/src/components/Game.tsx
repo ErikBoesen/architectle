@@ -19,12 +19,12 @@ function Game() {
   const [lastGuesses, setLastGuesses] = useState([]);
   const [showIntro, setShowIntro] = useState(false);
   const [showLossPopup, setShowLossPopup] = useState(false);
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [quizCity, setQuizCity] = useState(null);
 
   useEffect(() => {
     const cityFromUrl = window.location.pathname.split('/')[1]; // Get city from URL
     if (cityFromUrl) {
-      setSelectedCity(cityFromUrl);
+      setQuizCity(cityFromUrl);
     } else {
       setShowIntro(true);
     }
@@ -39,10 +39,10 @@ function Game() {
   }, []);
 
   useEffect(() => {
-    if (selectedCity) {
-      window.history.pushState(null, '', `/${selectedCity.toLowerCase()}`);
+    if (quizCity) {
+      window.history.pushState(null, '', `/${quizCity.toLowerCase()}`);
     }
-  }, [selectedCity]); // Update URL when selectedCity changes
+  }, [quizCity]); // Update URL when selectedCity changes
 
   const fillBuildingQueue = (buildings, city) => {
     console.log('Current city selected ' + city);
@@ -59,13 +59,13 @@ function Game() {
   };
 
   useEffect(() => {
-    if (buildingsAll.length !== 0 && selectedCity !== null) {
-      fillBuildingQueue(buildingsAll, selectedCity);
+    if (buildingsAll.length !== 0 && quizCity !== null) {
+      fillBuildingQueue(buildingsAll, quizCity);
     }
-  }, [buildingsAll, selectedCity])
+  }, [buildingsAll, quizCity])
 
-  const handleCitySelection = (city) => {
-    setSelectedCity(city);
+  const handleQuizCitySelection = (city) => {
+    setQuizCity(city);
     setShowIntro(false);
   };
 
@@ -98,7 +98,7 @@ function Game() {
   };
 
   const restartGame = () => {
-    fillBuildingQueue(buildingsAll, selectedCity);
+    fillBuildingQueue(buildingsAll, quizCity);
     setLives(100);
     setRound(0);
     setUserGuess(0);
@@ -170,7 +170,7 @@ function Game() {
             <p>Guess the year each building was constructed based on its architectural style and other context clues. You have 100 lives, and you lose one for each year off you are from a correct answer. You can also get bonus points by guessing within the correct decade. Good luck!</p>
             <h3>Pick a city:</h3>
             {Object.keys(CITIES).map((slug) =>
-              <button key={slug} onClick={() => handleCitySelection(slug)}>{CITIES[slug]}</button>
+              <button key={slug} onClick={() => handleQuizCitySelection(slug)}>{CITIES[slug]}</button>
             )}
           </div>
         </div>
@@ -182,7 +182,7 @@ function Game() {
           <p>Congratulations! You made it to round {round}.</p>
           <button onClick={copyToClipboard}>Share</button>
           <button onClick={restartGame}>Restart Game</button>
-          <button onClick={() => handleCitySelection(null)}>Switch Cities</button>
+          <button onClick={() => handleQuizCitySelection(null)}>Switch Cities</button>
         </div>
       </div>
 
