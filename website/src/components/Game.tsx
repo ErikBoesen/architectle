@@ -20,6 +20,8 @@ function Game() {
   const [showIntro, setShowIntro] = useState(false);
   const [showLossPopup, setShowLossPopup] = useState(false);
   const [quizCity, setQuizCity] = useState(null);
+  const [cityGuess, setCityGuess] = useState('');
+  const [cityOptions, setCityOptions] = useState([]);
 
   useEffect(() => {
     const cityFromUrl = window.location.pathname.split('/')[1]; // Get city from URL
@@ -40,7 +42,7 @@ function Game() {
 
   useEffect(() => {
     if (quizCity) {
-      window.history.pushState(null, '', `/${quizCity.toLowerCase()}`);
+      // window.history.pushState(null, '', `/${quizCity.toLowerCase()}`);
     }
   }, [quizCity]); // Update URL when selectedCity changes
 
@@ -69,7 +71,7 @@ function Game() {
     setShowIntro(false);
   };
 
-  const handleGuess = () => {
+  const handleYearGuess = () => {
     const correctYear = buildingsQueue[round].year;
     let difference = Math.abs(correctYear - userGuess);
     difference = 20 - difference;
@@ -95,6 +97,17 @@ function Game() {
     if (lives <= 0) {
       setShowLossPopup(true);
     }
+
+    if (quizCity === 'all') {
+      setCityOptions(Object.keys(CITIES).filter(city => city !== 'all'));
+    }
+  };
+
+  const handleCityGuess = (selectedCity) => {
+    if (buildingsQueue[round].city === selectedCity) {
+      setLives(prevLives => prevLives + 10);
+    }
+    setCityGuess(null);
   };
 
   const restartGame = () => {
@@ -157,7 +170,15 @@ function Game() {
                 onChange={(e) => setUserGuess(Number(e.target.value))}
               />
             </label>
-            <button onClick={handleGuess}>Guess</button>
+            {quizCity === 'all' && (
+              <div>
+                <h3>Guess the city:</h3>
+                {cityOptions.map(city => (
+                  <button key={city} onClick={() => handleCityGuess(city)}>{CITIES[city]}</button>
+                ))}
+              </div>
+            )}
+            <button onClick={handleYearGuess}>Guess</button>
             <Guesses guesses={lastGuesses} />
           </div>
         )}
