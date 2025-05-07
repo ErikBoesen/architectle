@@ -115,7 +115,7 @@ def scrape_individual_building_page(page_slug):
     html = requests.get(WIKI_ROOT + '/wiki/' + page_slug).text
     soup = BeautifulSoup(html, 'html.parser')
 
-    infobox = soup.find('table', {'class': 'infobox'})
+    infobox = soup.select_one('table.infobox:not(.ib-station)')
     if infobox is None:
         # would be cool to throw the page content to ChatGPT or something but that would be intense
         return None
